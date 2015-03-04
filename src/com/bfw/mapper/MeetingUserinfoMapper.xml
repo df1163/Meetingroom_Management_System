@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bfw.mapper.MeetingUserinfoMapper" >
+  <resultMap id="meetingUserinfoMap" type="MeetingUserinfo" >
+    <id column="meetingroom_user_id" property="meetingroomUserId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="bespeak_id" property="bespeakId" jdbcType="INTEGER" />
+     <result column="user_name" property="userName" jdbcType="VARCHAR" />
+     <result column="meeting_name" property="meetingName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 添加参加会议人员 -->
+  <insert id="addMeetingUserinfo" parameterType="MeetingUserinfo">
+  	insert into meeting_userinfo (user_id,bespeak_id) values(#{userId},#{bespeakId})
+  </insert>
+  
+  <!-- 查询参加会议人员信息 -->
+  <select id="getAllMeetingUserinfo" parameterType="MeetingUserinfo" resultMap="meetingUserinfoMap">
+  	select  a.* ,b.user_name,c.meeting_name
+
+	 from meeting_userinfo a ,user_info b,meetingroom_bespeak c
+	
+	where a.user_id = b.user_id and a.bespeak_id = c.bespeak_id  and a.bespeak_id=#{bespeakId}
+  
+  </select>
+ 
+</mapper>

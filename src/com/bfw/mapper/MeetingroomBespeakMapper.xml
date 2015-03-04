@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bfw.mapper.MeetingroomBespeakMapper" >
+  <resultMap id="meetingroomBespeakMap" type="MeetingroomBespeak" >
+    <id column="bespeak_id" property="bespeakId" jdbcType="INTEGER" />
+    <result column="meetingroom_id" property="meetingroomId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+    <result column="meeting_name" property="meetingName" jdbcType="VARCHAR" />
+    <result column="strat_time" property="stratTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="meetingroom_note" property="meetingroomNote" jdbcType="VARCHAR" />
+    <result column="bespeak_state" property="bespeakState" jdbcType="VARCHAR" />
+    <result column="use_user_id" property="useUserId" jdbcType="VARCHAR" />
+    <result column="use_user_name" property="useUserName" jdbcType="VARCHAR" />
+    <result column="auditing_time" property="auditingTime" jdbcType="TIMESTAMP" />
+    <result column="auditing_info" property="auditingInfo" jdbcType="VARCHAR" />
+     <result column="user_name" property="userName" jdbcType="VARCHAR" />
+      <result column="meetingroom_name" property="meetingroomName" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+ 
+ <!-- 添加预约信息
+ bespeak_state 0 未审核状态 
+  -->
+ <insert id="addBespeak" parameterType="MeetingroomBespeak" >
+ 	insert into meetingroom_bespeak (bespeak_id,meetingroom_id,user_id,apply_time,meeting_name,strat_time,end_time,meetingroom_note,bespeak_state)
+ 	values(#{bespeakId},#{meetingroomId},#{userId},now(),#{meetingName},#{stratTime},#{endTime},#{meetingroomNote},'0')
+ </insert>
+ 
+ <!-- 查询预约会议室信息 -->
+ <select id="getAllMeetingroomBespeak" parameterType="MeetingroomBespeak" resultMap="meetingroomBespeakMap">
+ 	select a.*, b.user_name,c.meetingroom_name
+	from meetingroom_bespeak a,user_info  b ,meeting_room c
+	where  a.user_id = b.user_id and  a.meetingroom_id= c.meetingroom_id  
+
+ 	<if test="meetingName!=null and meetingName!=''">
+ 		and a.meeting_name like #{meetingName}
+ 	</if>
+ 	<if test="userId!=null and userId!=''">
+ 		and a.user_id = #{userId}
+ 	</if>
+ 	<if test="bespeakState!=null and bespeakState!=''">
+ 		and a.bespeak_state=#{bespeakState}
+ 	</if>
+ 	<if test="useUserId!=null and useUserId!=''">
+ 		and a.use_user_id = #{useUserId}
+ 	</if>
+ 	 	<if test="mark!=null and mark == '-1'">
+ 		and a.bespeak_state!='0'
+ 	</if>
+ 
+ 	order by a.bespeak_id desc
+ </select>
+ 
+ <!-- 根据编号查询预约会议室信息 -->
+ <select id="getMeetingroomBespeak" parameterType="Integer" resultMap="meetingroomBespeakMap">
+
+	 
+	 select x.*,y.user_name as use_user_name  from 	(select a.*, b.user_name,c.meetingroom_name
+	from meetingroom_bespeak a,user_info  b ,meeting_room c
+	where  a.user_id = b.user_id and  a.meetingroom_id= c.meetingroom_id  
+	 and a.bespeak_id = #{bespeakId} ) x  left join user_info y on x.use_user_id = y.user_id
+ 
+ </select>
+ 
+ <!-- 修改预约会议室信息 -->
+ <update id="updateBespeak" parameterType="MeetingroomBespeak">
+ 
+ 	update  meetingroom_bespeak  
+ 	set  
+ 	meetingroom_id=#{meetingroomId},
+ 	user_id=#{userId},
+ 	meeting_name=#{meetingName},
+ 	strat_time=#{stratTime},
+ 	end_time=#{stratTime},
+ 	meetingroom_note=#{meetingroomNote},
+ 	bespeak_state=#{bespeakState},
+ 	use_user_id = #{useUserId},
+ 	auditing_time=#{auditingTime},
+ 	auditing_info=#{auditingInfo} 
+ 		
+ 	where bespeak_id=#{bespeakId}
+
+ </update>
+ 
+</mapper>

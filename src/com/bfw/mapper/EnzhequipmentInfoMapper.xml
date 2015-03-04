@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bfw.mapper.EnquipmentMapper" >
+  <resultMap id="enzhequipmentInfoMap" type="EnzhequipmentInfo" >
+    <id column="enzhequipment_id" property="enzhequipmentId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="meetingroom_id" property="meetingroomId" jdbcType="INTEGER" />
+    <result column="enzhequipment_name" property="enzhequipmentName" jdbcType="VARCHAR" />
+    <result column="procurement_time" property="procurementTime" jdbcType="TIMESTAMP" />
+    <result column="enzhequipment_price" property="enzhequipmentPrice" jdbcType="DOUBLE" />
+    <result column="enzhequipment_remerk" property="enzhequipmentRemerk" jdbcType="VARCHAR" />
+     <result column="user_name" property="userName" jdbcType="VARCHAR" />
+      <result column="meetingroom_name" property="meetingroomName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 添加设备信息 -->
+  <insert id="addEnquipment" parameterType="EnzhequipmentInfo">
+  	insert into enzhequipment_info (user_id,enzhequipment_name,procurement_time,enzhequipment_price,enzhequipment_remerk)
+  	values(#{userId},#{enzhequipmentName},#{procurementTime},#{enzhequipmentPrice},#{enzhequipmentRemerk})
+  </insert>
+  
+  <!--  查询设备信息 -->
+  <select id="getAllEnzhequipmentInfo" parameterType="EnzhequipmentInfo" resultMap="enzhequipmentInfoMap">
+  	select * from  enzhequipment_info 
+  	<where>
+  		<if test="enzhequipmentName!=null and enzhequipmentName!=''">
+  			and enzhequipment_name like #{enzhequipmentName}
+  		</if>  		
+  	</where>
+  </select>
+  
+  
+  <!-- 查询未使用设备信息 -->
+  <select id="queryEnzhequipmentInfo" resultMap="enzhequipmentInfoMap">
+  	select * from  enzhequipment_info  where meetingroom_id  is   null
+  </select>
+  
+  
+  <!-- 根据设备编号查询设备信息 -->
+  <select id="getEnzhequipmentInfo" parameterType="Integer" resultMap="enzhequipmentInfoMap">
+  	select * from enzhequipment_info where enzhequipment_id = #{enzhequipmentId}
+  </select>
+  
+  <!-- 修改设备信息 -->
+  <update id="updateEnzhequipmentInfo" parameterType="EnzhequipmentInfo">
+  	update  enzhequipment_info 
+  	set  enzhequipment_name=#{enzhequipmentName},
+  	enzhequipment_price=#{enzhequipmentPrice},
+  	meetingroom_id=#{meetingroomId},
+  	enzhequipment_remerk=#{enzhequipmentRemerk}
+  	where enzhequipment_id = #{enzhequipmentId}
+  </update>
+  
+  <!-- 根据编号删除设备信息 -->
+  <delete id="deleteEnzhequipmentInfo" parameterType="Integer">
+  	delete from enzhequipment_info where enzhequipment_id= #{enzhequipmentId}
+  </delete>
+  
+  <!-- 查询 -->
+  <select id="selectEnzhequipmentInfo" parameterType="EnzhequipmentInfo" resultMap="enzhequipmentInfoMap">
+  
+	select x.*,y.meetingroom_name 
+	
+	from (select a.*,b.user_name from enzhequipment_info a,user_info b  where a.user_id = b.user_id
+	<if test="enzhequipmentName!=null and enzhequipmentName!=''">
+		and a.enzhequipment_name like #{enzhequipmentName}
+	</if>
+	<if test="meetingroomId!=null and meetingroomId!=''">
+		and a.meetingroom_id = #{meetingroomId}
+	</if>
+	
+	) x
+	
+	left join meeting_room y  on x.meetingroom_id = y.meetingroom_id
+  
+  </select>
+  
+  <!-- 根据编号查询设备信息 -->
+  <select id="showEnquipmentInfo"  parameterType="EnzhequipmentInfo" resultMap="enzhequipmentInfoMap">
+  	select x.*,y.meetingroom_name 
+	
+	from (select a.*,b.user_name from enzhequipment_info a,user_info b  where a.user_id = b.user_id
+		and a.enzhequipment_id = #{enzhequipmentId}
+	) x
+	
+	left join meeting_room y  on x.meetingroom_id = y.meetingroom_id
+  
+  </select>
+  
+  
+</mapper>

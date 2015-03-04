@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bfw.mapper.UserInfoMapper">
+  <resultMap id="userinfoMap" type="UserInfo">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_pw" jdbcType="VARCHAR" property="userPw" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_url" jdbcType="VARCHAR" property="userUrl" />
+    <result column="user_sex" jdbcType="VARCHAR" property="userSex" />
+    <result column="user_age" jdbcType="INTEGER" property="userAge" />
+    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_beizhu" jdbcType="VARCHAR" property="userBeizhu" />
+    <result column="user_ctime" jdbcType="TIMESTAMP" property="userCtime" />
+    <result column="is_used" jdbcType="VARCHAR" property="isUsed" />
+    <result column="user_anthority" jdbcType="VARCHAR" property="userAnthority" />
+    <result column="bespeak_id" jdbcType="VARCHAR" property="bespeakId" />
+  </resultMap>
+ 
+	<!-- 根据账号和密码查询用户信息 -->
+	<select id="getUser"  parameterType="UserInfo" resultMap="userinfoMap">
+		select * from user_info where user_id = #{userId} and user_pw=#{userPw} and is_used='1'
+	</select>
+	
+	<!-- 添加用户信息 -->
+ 	<insert id="addUser" parameterType="UserInfo">
+ 		insert into user_info (user_id,user_pw,user_name,user_url,user_sex,user_age,user_phone,user_beizhu,user_ctime,is_used,user_anthority)
+ 		values(#{userId},#{userPw},#{userName},#{userUrl},#{userSex},#{userAge},#{userPhone},#{userBeizhu},now(),'1','1')
+ 	</insert>
+ 	
+ 	<!-- 查询用户信息 is_used 0 为无效 1为有效 -->
+ 	<select id="getAllUser" parameterType="UserInfo" resultMap="userinfoMap">
+ 		select * from user_info where  is_used='1'
+ 		<if test="userName!=null  and userName!=''">
+ 			and user_name like #{userName}
+
+ 		</if>
+ 		<if test="userSex!=null and userSex!=''">
+ 			and user_sex = #{userSex}
+ 		</if>
+ 		
+ 		<if test="bespeakId!=null and bespeakId!=''">
+ 			and user_id not in (
+ 				select user_id from meeting_userinfo where bespeak_id=#{bespeakId}
+ 			)
+ 		</if>
+ 	</select>
+ 	
+ 	<!-- 根据编号查询用户信息 -->
+ 	<select id="getUserInfo" parameterType="String" resultMap="userinfoMap">
+ 		select * from  user_info where user_id = #{userId} and is_used='1'
+ 	</select>
+ 	
+ 	<!-- 修改用户信息 -->
+ 	<update id="updateUser" parameterType="UserInfo">
+ 		update user_info set user_pw=#{userPw},user_name=#{userName},user_url=#{userUrl},user_sex=#{userSex},user_age=#{userAge},user_phone=#{userPhone},user_beizhu=#{userBeizhu},is_used=#{isUsed},user_anthority=#{userAnthority}
+ 		where user_id=#{userId}
+ 	</update>
+ 	
+ 	<!-- 删除用户信息 
+ 	<delete id="deleteUser" parameterType="String">
+ 		delete from user_info where user_id = #{userId}
+ 	</delete>
+ 	-->
+
+</mapper>

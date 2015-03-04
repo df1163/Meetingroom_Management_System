@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bfw.mapper.MeetingRoomMapper">
+	<resultMap id="meetingRoomMap" type="MeetingRoom">
+		<id column="meetingroom_id" property="meetingroomId" jdbcType="INTEGER" />
+		<result column="meetingroom_name" property="meetingroomName"
+			jdbcType="VARCHAR" />
+		<result column="meetingroom_size" property="meetingroomSize"
+			jdbcType="VARCHAR" />
+		<result column="meetingroom_note" property="meetingroomNote"
+			jdbcType="VARCHAR" />
+		<result column="meetingroom_state" property="meetingroomState"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 查询会议室信息 -->
+	<select id="getAllMeetingRoom" parameterType="MeetingRoom"
+		resultMap="meetingRoomMap">
+		select * from meeting_room where meetingroom_state='1'
+		<if test="meetingroomName!=null and meetingroomName!=''">
+			and meetingroom_name like #{meetingroomName}
+		</if>
+	</select>
+	
+	
+	<!-- 添加会议室信息 -->
+	<insert id="addMeetingRoom" parameterType="MeetingRoom">
+		insert into meeting_room (meetingroom_id,meetingroom_name,meetingroom_size,meetingroom_note,meetingroom_state)
+		values(#{meetingroomId},#{meetingroomName},#{meetingroomSize},#{meetingroomNote},'1')
+	
+	</insert>
+	
+	<!-- 根据编号查询会议室 -->
+	<select id="getMeetingRoom"  parameterType="Integer" resultMap="meetingRoomMap">
+		select * from meeting_room where meetingroom_id = #{meetingroomId}
+	</select>
+	
+	<!-- 修改会议室信息 -->
+	<update id="updateMeetingRoom" parameterType="MeetingRoom">
+		update meeting_room 
+		set meetingroom_name=#{meetingroomName},
+		meetingroom_size=#{meetingroomSize},
+		meetingroom_note=#{meetingroomNote},
+		meetingroom_state=#{meetingroomState}
+		where meetingroom_id=#{meetingroomId}
+	</update>
+	
+</mapper>

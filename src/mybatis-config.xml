@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<typeAliases>
+		<typeAlias alias="UserInfo" type="com.bfw.domain.UserInfo"/>
+		<typeAlias alias="EnzhequipmentInfo" type="com.bfw.domain.EnzhequipmentInfo"/>
+		<typeAlias alias="MeetingRoom" type="com.bfw.domain.MeetingRoom"/>
+		<typeAlias alias="MeetingroomBespeak" type="com.bfw.domain.MeetingroomBespeak"/>
+		<typeAlias alias="MeetingUserinfo" type="com.bfw.domain.MeetingUserinfo"/>
+	</typeAliases>
+	
+	<!-- 环境 -->
+	<environments default="developments">
+		<environment id="mysql">
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/meet"/>
+				<property name="username" value="root" />
+				<property name="password" value="root" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 映射文件 -->
+	<mappers>
+		<mapper resource="com/bfw/mapper/UserInfoMapper.xml"/>
+		<mapper resource="com/bfw/mapper/EnzhequipmentInfoMapper.xml"/>
+		<mapper resource="com/bfw/mapper/MeetingRoomMapper.xml"/>
+		<mapper resource="com/bfw/mapper/MeetingroomBespeakMapper.xml"/>
+		<mapper resource="com/bfw/mapper/MeetingUserinfoMapper.xml"/>
+	</mappers>
+	
+	
+</configuration>
